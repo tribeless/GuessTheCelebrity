@@ -88,11 +88,9 @@ public class MainActivity extends AppCompatActivity {
                 urlConnection.connect();
                 InputStream inputStream = urlConnection.getInputStream();
                 return BitmapFactory.decodeStream(inputStream);
-            } catch (MalformedURLException e) {
+            } catch (Exception e) {
                e.printStackTrace();
-           } catch (IOException e) {
-                e.printStackTrace();
-            }
+           }
 
             return null;
         }
