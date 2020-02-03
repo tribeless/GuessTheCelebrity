@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void guessCelebrity(View view){
 
-
+        update();
 
 
     }
