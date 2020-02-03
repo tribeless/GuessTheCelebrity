@@ -60,14 +60,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String names="";
+        String names = " word";
 
         Random rand = new Random();
         locationOfCorrectAnswer = rand.nextInt(4)+1;
         int incorrectAnswer = 0;
         for(int i=0;i<=4;i++) {
             if(i==locationOfCorrectAnswer)
-                answer.add(1);
+                answer.add(names);
             else
                 answer.add(incorrectAnswer);
         }
