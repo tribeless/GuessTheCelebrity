@@ -56,9 +56,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             newImg = img.execute("https://static1.therichestimages.com/wordpress/wp-content/uploads/2012/06/Michael-Bloomberg.jpg?").get();
             imageView.setImageBitmap(newImg);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
