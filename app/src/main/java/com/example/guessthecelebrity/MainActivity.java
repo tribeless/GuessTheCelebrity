@@ -10,13 +10,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
     /*String [] correctNames = {"Brian", "Kyole", "Richard", "Mary", "Mueni"};
     String [] incorrectNames = {"Ken","Martin","Andrew"};*/
 
-    ArrayList<Object> answer = new ArrayList<>();
+    ArrayList<String> celebURLs = new ArrayList<>();
+    ArrayList<String> chosenNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +54,34 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             result = image.execute("http://www.posh24.se/kandisar").get();
-            Log.i("Contents of UrL", result);
+            //<div class="sidebarContainer">
 
+            String [] celebrityNames = result.split("<div class=\"sidebarContainer\">");
+            Pattern p = Pattern.compile("alt=\"(.*?)\"");
+            Matcher m = p.matcher(celebrityNames[0]);
+            while(m.find()){
+
+                chosenNames.add(m.group(1));
+            }
+
+             p = Pattern.compile(" src=\"(.*?)\"");
+             m = p.matcher(celebrityNames[0]);
+            while(m.find()){
+
+                celebURLs.add(m.group(1));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Random random = new Random();
+        locationOfCorrectAnswer = random.nextInt(celebURLs.size());
+        ImageDownloader imageDownloader = new ImageDownloader();
+        Bitmap celebPics;
+        try {
+            celebPics = imageDownloader.execute(celebURLs.get(locationOfCorrectAnswer)).get();
+            imageView.setImageBitmap(celebPics);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,31 +95,25 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    /*public void update(){
 
+    public static class ImageDownloader extends AsyncTask<String, Void, Bitmap>{
 
-
-
-        Random rand = new Random();
-        locationOfCorrectAnswer = rand.nextInt(4);
-        //int incorrectAnswer = 0;
-        for(int i=0;i<4;i++) {
-            if(i==locationOfCorrectAnswer){
-                for(String correct:correctNames){
-               answer.add(correct);}}
-            else{
-                answer.addAll(Arrays.asList(incorrectNames));}
+        @Override
+        protected Bitmap doInBackground(String...urls){
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                InputStream inputStream = connection.getInputStream();
+                return BitmapFactory.decodeStream(inputStream);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+                return null;
         }
-        button1.setText(String.format("%s",answer.get(0)));
-        button2.setText(String.format("%s",answer.get(1)));
-        button3.setText(String.format("%s",answer.get(2)));
-        button4.setText(String.format("%s",answer.get(3)));
-
-        *//*for(String correct:correctNames)
-            correct++;*//*
 
     }
-*/
+
         public static class DownloadImage extends AsyncTask<String, Void, String> {
 
         @Override
@@ -106,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 while(data!=-1){
 
                     char current = (char)data;
-                    result +=current;
+                    result += current;
                     data = isr.read();
 
                 }
