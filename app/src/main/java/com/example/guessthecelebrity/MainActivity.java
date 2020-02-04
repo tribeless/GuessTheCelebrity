@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
     Button button2;
     Button button3;
     Button button4;
-    String [] correctNames = {"Brian", "Kyole", "Richard", "Mary", "Mueni"};
-    String [] incorrectNames = {"Ken","Martin","Andrew"};
+    /*String [] correctNames = {"Brian", "Kyole", "Richard", "Mary", "Mueni"};
+    String [] incorrectNames = {"Ken","Martin","Andrew"};*/
 
     ArrayList<Object> answer = new ArrayList<>();
 
