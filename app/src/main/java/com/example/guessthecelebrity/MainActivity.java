@@ -6,18 +6,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     Button button2;
     Button button3;
     Button button4;
+    String [] correctNames = {"Brian", "Kyole", "Richard", "Mary", "Mueni"};
+    String [] incorrectNames = {"Ken","Martin","Andrew"};
+
     ArrayList<Object> answer = new ArrayList<>();
 
     @Override
@@ -38,54 +40,78 @@ public class MainActivity extends AppCompatActivity {
         button2 = findViewById(R.id.button2);
         button3 = findViewById(R.id.button3);
         button4 = findViewById(R.id.button4);
+        //update();
+
+        DownloadImage image = new DownloadImage();
+        String result;
+
+        try {
+            result = image.execute("http://www.posh24.se/kandisar").get();
+            Log.i("Contents of UrL", result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 
     public void guessCelebrity(View view){
 
-        update();
+       // update();
 
 
     }
-    public void update(){
+    /*public void update(){
 
 
-        DownloadImage img = new DownloadImage();
-        Bitmap newImg  ;
 
-        try {
-            newImg = img.execute("https://static1.therichestimages.com/wordpress/wp-content/uploads/2012/06/Michael-Bloomberg.jpg?").get();
-            imageView.setImageBitmap(newImg);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String names = " word";
 
         Random rand = new Random();
-        locationOfCorrectAnswer = rand.nextInt(4)+1;
-        int incorrectAnswer = 0;
-       /* for(int i=0;i<=4;i++) {
-            if(i==locationOfCorrectAnswer)
-                answer.add(names);
-            else
-                answer.add(incorrectAnswer);
-        }*/
+        locationOfCorrectAnswer = rand.nextInt(4);
+        //int incorrectAnswer = 0;
+        for(int i=0;i<4;i++) {
+            if(i==locationOfCorrectAnswer){
+                for(String correct:correctNames){
+               answer.add(correct);}}
+            else{
+                answer.addAll(Arrays.asList(incorrectNames));}
+        }
+        button1.setText(String.format("%s",answer.get(0)));
+        button2.setText(String.format("%s",answer.get(1)));
+        button3.setText(String.format("%s",answer.get(2)));
+        button4.setText(String.format("%s",answer.get(3)));
+
+        *//*for(String correct:correctNames)
+            correct++;*//*
 
     }
-
-        public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+*/
+        public static class DownloadImage extends AsyncTask<String, Void, String> {
 
         @Override
-        protected Bitmap doInBackground(String... strings) {
+        protected String doInBackground(String... strings) {
             URL url ;
+            HttpURLConnection urlConnection;
+            String result = "";
 
             try {
                 url = new URL(strings[0]);
-                HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
-                urlConnection.connect();
+                urlConnection = (HttpURLConnection)url.openConnection();
+
                 InputStream inputStream = urlConnection.getInputStream();
-                return BitmapFactory.decodeStream(inputStream);
+                InputStreamReader isr = new InputStreamReader(inputStream);
+
+                int data = isr.read();
+                while(data!=-1){
+
+                    char current = (char)data;
+                    result +=current;
+                    data = isr.read();
+
+                }
+                return result;
+
             } catch (Exception e) {
                e.printStackTrace();
            }
