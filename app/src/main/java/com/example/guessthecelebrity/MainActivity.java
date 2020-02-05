@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     Button button4;
     String [] answers = new String[4];
 
-
-
     ArrayList<String> celebURLs = new ArrayList<>();
     ArrayList<String> chosenNames = new ArrayList<>();
 
@@ -169,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         button4 = findViewById(R.id.button4);
 
         DownloadImage image = new DownloadImage();
-        String result;
+        String result = null;
 
         try {
             result = image.execute("http://www.posh24.se/kandisar").get();
