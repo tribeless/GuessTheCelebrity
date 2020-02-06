@@ -167,13 +167,14 @@ public class MainActivity extends AppCompatActivity {
         button4 = findViewById(R.id.button4);
 
         DownloadImage image = new DownloadImage();
-        String result = null;
+        String result ;
 
         try {
             result = image.execute("http://www.posh24.se/kandisar").get();
 
             //GETTING THE SPECIFIC CONTENT WE NEED USING THE REGEX METHOD
             String [] celebrityNames = result.split("<div class=\"sidebarContainer\">");
+            //<div class=\"sidebarContainer\">
             Pattern p = Pattern.compile("alt=\"(.*?)\"");
             Matcher m = p.matcher(celebrityNames[0]);
             while(m.find()){
